@@ -41,7 +41,7 @@ export const getStatusColor = (status) => {
 export const getStatusLabel = (status) => {
   const labels = {
     planning: 'Planning', active: 'Active', on_hold: 'On Hold', completed: 'Completed', archived: 'Archived',
-    todo: 'To Do', in_progress: 'In Progress', review: 'In Review', completed: 'Completed'
+    todo: 'To Do', in_progress: 'In Progress', review: 'In Review', done: 'Done'
   };
   return labels[status] || status;
 };

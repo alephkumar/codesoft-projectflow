@@ -5,7 +5,6 @@ import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement
 import { dashboardAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { StatSkeleton } from '../components/common/LoadingSkeleton';
-import { StatusBadge } from '../components/common/Badge';
 import { timeAgo } from '../utils/helpers';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, BarElement, Title, Tooltip, Legend, Filler);

@@ -38,7 +38,7 @@ export default function SearchPage() {
         <>
           {projects.length > 0 && (
             <div style={{ marginBottom: 32 }}>
-              <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 16, marginBottom: 16, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.8px', fontSize: 12 }}>Projects ({projects.length})</div>
+              <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, marginBottom: 16, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.8px', fontSize: 12 }}>Projects ({projects.length})</div>
               <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
                 {projects.map((p, i) => (
                   <div key={p._id} onClick={() => navigate(`/projects/${p._id}`)} style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '16px 20px', borderBottom: i < projects.length - 1 ? '1px solid var(--border)' : 'none', cursor: 'pointer', transition: 'background 0.15s' }}
