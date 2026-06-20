@@ -50,10 +50,11 @@ app.use(cors({
     // Allow requests with no origin (like mobile apps, curl, or server-to-server)
     if (!origin) return callback(null, true);
     
-    // Check if origin is in the allowed list, is localhost, or ends with vercel.app
+    // Check if origin is in the allowed list, is localhost, ends with vercel.app, or ends with github.io
     const isAllowed = allowedOrigins.includes(origin) || 
                       origin.startsWith('http://localhost:') || 
-                      /\.vercel\.app$/.test(origin);
+                      /\.vercel\.app$/.test(origin) ||
+                      /\.github\.io$/.test(origin);
                       
     if (isAllowed) {
       callback(null, true);
@@ -87,6 +88,11 @@ app.use('/api/comments', commentRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/notifications', notificationRoutes);
+
+// Root route
+app.get('/', (req, res) => {
+  res.json({ message: 'ProjectFlow API is running successfully!' });
+});
 
 // Health check
 app.get('/api/health', (req, res) => {

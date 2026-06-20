@@ -28,11 +28,14 @@ const connectDB = async () => {
       const conn = await mongoose.connect(mongoUri);
       console.log(`MongoDB Connected: ${conn.connection.host}`);
 
-      // Auto-seed if using in-memory server
-      if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
+      // Auto-seed if database is empty or in dev/test mode
+      const User = require('../models/User');
+      const userCount = await User.countDocuments().catch(() => 0);
+      
+      if (userCount === 0 || process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
         try {
           const seed = require('../utils/seedData');
-          console.log('🌱 Database is in development/test mode. Seeding demo data...');
+          console.log('🌱 Seeding demo data...');
           await seed(true);
         } catch (seedErr) {
           console.error(`🌱 Seeding failed: ${seedErr.message}`);
