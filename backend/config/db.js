@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { MongoMemoryServer } = require('mongodb-memory-server');
+// MongoMemoryServer imported dynamically when needed
 
 let mongoServer;
 let connectingPromise = null;
@@ -20,6 +20,7 @@ const connectDB = async () => {
       // Start in-memory MongoDB for testing, or if no URI is set, or if it's the default offline localhost URI
       if (process.env.NODE_ENV === 'test' || !mongoUri || mongoUri.includes('127.0.0.1:62300') || mongoUri.includes('localhost:27017')) {
         console.log('🌱 Starting in-memory MongoDB server for development/testing...');
+        const { MongoMemoryServer } = require('mongodb-memory-server');
         mongoServer = await MongoMemoryServer.create();
         mongoUri = mongoServer.getUri();
         console.log(`🌱 In-memory MongoDB URI: ${mongoUri}`);

@@ -22,6 +22,9 @@ const app = express();
 // Connect to Database
 connectDB();
 
+// Trust proxy (required for rate limiting behind Render/Vercel proxy)
+app.set('trust proxy', 1);
+
 // Security Middleware
 app.use(helmet());
 
