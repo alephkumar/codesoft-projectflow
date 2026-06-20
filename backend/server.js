@@ -42,12 +42,30 @@ app.use('/api/', limiter);
 app.use('/api/auth', authLimiter);
 
 // CORS
+const clientUrl = process.env.CLIENT_URL;
+const allowedOrigins = clientUrl ? clientUrl.split(',').map(url => url.trim()) : [];
+
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps, curl, or server-to-server)
+    if (!origin) return callback(null, true);
+    
+    // Check if origin is in the allowed list, is localhost, or ends with vercel.app
+    const isAllowed = allowedOrigins.includes(origin) || 
+                      origin.startsWith('http://localhost:') || 
+                      /\.vercel\.app$/.test(origin);
+                      
+    if (isAllowed) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
 
 // Body Parsing
 app.use(express.json({ limit: '10mb' }));
