@@ -21,7 +21,9 @@ services:
         generateValue: true # Generates a random secure secret automatically
       - key: JWT_REFRESH_SECRET
         generateValue: true # Generates a random secure secret automatically
+      - key: JWT_EXPIRE
+        value: 7d
+      - key: JWT_REFRESH_EXPIRE
+        value: 30d
       - key: CLIENT_URL
-        sync: false # Set to your frontend Vercel URL (e.g. https://projectflow-frontend.vercel.app)
-      - key: PORT
-        value: 5000
+        sync: false # Set to your frontend Vercel URL (e.g. https://your-app.vercel.app)

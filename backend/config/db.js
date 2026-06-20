@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-// MongoMemoryServer imported dynamically when needed
 
 let mongoServer;
 let connectingPromise = null;
@@ -16,9 +15,16 @@ const connectDB = async () => {
 
     try {
       let mongoUri = process.env.MONGO_URI;
+      const isProduction = process.env.NODE_ENV === 'production';
 
-      // Start in-memory MongoDB for testing, or if no URI is set, or if it's the default offline localhost URI
-      if (process.env.NODE_ENV === 'test' || !mongoUri || mongoUri.includes('127.0.0.1:62300') || mongoUri.includes('localhost:27017')) {
+      // In production, MONGO_URI must be set to a real MongoDB (e.g. MongoDB Atlas)
+      if (isProduction && (!mongoUri || mongoUri.includes('127.0.0.1') || mongoUri.includes('localhost'))) {
+        console.error('❌ MONGO_URI is not set or points to localhost. Please set a valid MongoDB Atlas URI in your Render environment variables.');
+        process.exit(1);
+      }
+
+      // Start in-memory MongoDB only for development/testing
+      if (!isProduction && (!mongoUri || mongoUri.includes('127.0.0.1:62300') || mongoUri.includes('localhost:27017'))) {
         console.log('🌱 Starting in-memory MongoDB server for development/testing...');
         const { MongoMemoryServer } = require('mongodb-memory-server');
         mongoServer = await MongoMemoryServer.create();
@@ -29,17 +35,19 @@ const connectDB = async () => {
       const conn = await mongoose.connect(mongoUri);
       console.log(`MongoDB Connected: ${conn.connection.host}`);
 
-      // Auto-seed if database is empty or in dev/test mode
-      const User = require('../models/User');
-      const userCount = await User.countDocuments().catch(() => 0);
-      
-      if (userCount === 0 || process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
-        try {
-          const seed = require('../utils/seedData');
-          console.log('🌱 Seeding demo data...');
-          await seed(true);
-        } catch (seedErr) {
-          console.error(`🌱 Seeding failed: ${seedErr.message}`);
+      // Only seed in development/test mode, or if the database is completely empty
+      if (!isProduction) {
+        const User = require('../models/User');
+        const userCount = await User.countDocuments().catch(() => 0);
+
+        if (userCount === 0) {
+          try {
+            const seed = require('../utils/seedData');
+            console.log('🌱 Seeding demo data...');
+            await seed(true);
+          } catch (seedErr) {
+            console.error(`🌱 Seeding failed: ${seedErr.message}`);
+          }
         }
       }
 

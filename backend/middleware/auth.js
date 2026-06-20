@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
+const JWT_SECRET = process.env.JWT_SECRET || 'projectflow_fallback_jwt_secret_key_12345';
+
 const protect = async (req, res, next) => {
   try {
     let token;
@@ -10,7 +12,7 @@ const protect = async (req, res, next) => {
     if (!token) {
       return res.status(401).json({ error: 'Not authorized, no token' });
     }
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET);
     const user = await User.findById(decoded.id);
     if (!user || !user.isActive) {
       return res.status(401).json({ error: 'User not found or deactivated' });
